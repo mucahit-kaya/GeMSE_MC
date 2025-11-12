@@ -19,13 +19,29 @@
 #z-position of end cap = 3.95cm
 #z-position of center of sample cavity = 7.94cm
 
-# Confinement
+# Confinement (The logical volume - here Cu_WiresCylinder - has to be fully included inside the shape - here Cylinder)
 /GeMSE/gun/type Volume
 /GeMSE/gun/shape Cylinder
 /GeMSE/gun/radius 34. cm
 /GeMSE/gun/halfz 18. cm
 /GeMSE/gun/center 0 0 7.94 cm
 /GeMSE/gun/confine Cu_WiresCylinder
+
+#### Confinement can also be a Box or Sphere, e.g.:
+## /GeMSE/gun/shape Box
+## /GeMSE/gun/halfx 120. mm
+## /GeMSE/gun/halfy 120. mm
+## /GeMSE/gun/halfz 40. mm
+## /GeMSE/gun/center 0 0 69.5 mm
+####
+
+#### And more than one volume can be confined to at once, e.g.:
+# #/GeMSE/gun/confine Teflon_LeftBrick
+# #/GeMSE/gun/confine Teflon_RightBrick
+# #/GeMSE/gun/confine Teflon_DownBrick
+# #/GeMSE/gun/confine Teflon_UpBrick
+# #/GeMSE/gun/confine Teflon_TopBrick
+
 
 /GeMSE/gun/angtype iso
 
@@ -250,18 +266,25 @@
 #Tl208
 /gammaline/energy 583.2
 /gammaline/G4BR 0.850116
-/gammaline/NuDatBR 0.85
+#/gammaline/NuDatBR 0.85 
+## The MC code corrects for the G4BR and multiplies with the NuDatBR
+## In the special case of Tl208 we have to also account for the Th228 
+## chain BR to Tl208 which is not 100% but rather 35.94% (212Bi->Tl208)
+#/gammaline/NuDatBR 0.85*0.3594=0.30549
+/gammaline/NuDatBR 0.30549
 /gammaline/SigRegion 0.4
 /gammaline/BkgRegion 10
 
 /gammaline/energy 2614.5
 /gammaline/G4BR 0.997361
-/gammaline/NuDatBR 0.99754
+## See above ~36% BR of Tl208 in Th228 chain
+#/gammaline/NuDatBR 0.99754*0.3594=0.3585
+/gammaline/NuDatBR 0.3585
 /gammaline/SigRegion 0.4
 /gammaline/BkgRegion 10
 
 /GeMSE/gun/ion 81 208 0 0
-/grdm/nucleusLimits 208 208 81 81 
+/grdm/nucleusLimits 208 208 81 81
 /run/beamOn 1000000
 
 #K40
