@@ -53,7 +53,9 @@ cutForPositron = defaultCutValue;
   //     G4OpAbsorption, G4OpRayleigh, G4OpMieHG, G4OpBoundaryProcess, G4OpWLS,
   //     G4Scintillation, G4Cerenkov
   RegisterPhysics(GeG4OpticalPhysics = new G4OpticalPhysics(VerboseLevel));
-  ((G4OpticalPhysics*)GeG4OpticalPhysics)->Configure(kCerenkov, false);
+  //((G4OpticalPhysics*)GeG4OpticalPhysics)->Configure(kCerenkov, false); --> not compatible Geant4 11.x and above
+  auto opticalParams = G4OpticalParameters::Instance();
+  opticalParams->SetProcessActivation("Cerenkov", false); //Compatible with  Geant4 11.x 
 
   // Hadron Elastic scattering
   RegisterPhysics(new G4HadronElasticPhysicsHP(VerboseLevel));
