@@ -287,7 +287,7 @@ G4LogicalVolume* GeMSE_DetectorConstruction::ConstructPmtR11410() {
   G4VisAttributes* PMT_vacuum_vis = new G4VisAttributes(yellow);
   PMT_vacuum_vis->SetVisibility(true);
   PMT_vacuum_vis->SetForceSolid(false);
-  PMT_vacuum_log->SetVisAttributes(G4VisAttributes::Invisible);
+  PMT_vacuum_log->SetVisAttributes(G4VisAttributes::GetInvisible());
 
   // Placement of the vacuum logical volume inside the PMT envelope volume
   G4ThreeVector PTM_vacuum_pos(0., 0., 0.);
