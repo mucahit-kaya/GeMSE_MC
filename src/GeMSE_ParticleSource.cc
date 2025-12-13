@@ -169,12 +169,28 @@ void GeMSE_ParticleSource::ConfineSourceToVolume(G4String hVolumeList) {
 
   set<G4String> hActualVolumeNames;
   for (set<G4String>::iterator pIt = m_hVolumeNames.begin();
-       pIt != m_hVolumeNames.end(); pIt++) {
+       pIt != m_hVolumeNames.end(); ++pIt) {
     G4String hRequiredVolumeName = *pIt;
     G4bool bMatch = false;
 
-    if (bMatch = (hRequiredVolumeName.last('*') != std::string::npos))
-      hRequiredVolumeName = hRequiredVolumeName.strip(G4String::trailing, '*');
+    // --- old code ---:
+    // if (bMatch = (hRequiredVolumeName.last('*') != std::string::npos))
+    //   hRequiredVolumeName = hRequiredVolumeName.strip(G4String::trailing, '*');
+
+    // --- new, compatible with Geant4 11.x ---
+    // find last '*' character (use rfind() instead of last())
+    std::size_t starPos = hRequiredVolumeName.rfind('*');
+    if (bMatch = (starPos != G4String::npos)) {
+      // remove trailing '*' characters (instead of strip(trailing,'*'))
+      std::size_t lastNotStar = hRequiredVolumeName.find_last_not_of('*');
+      if (lastNotStar == G4String::npos) {
+        // if string is all '*' -> leave empty
+        hRequiredVolumeName.clear();
+      } else {
+        // remove characters after the last non-'*' character
+        hRequiredVolumeName.erase(lastNotStar + 1);
+      }
+    }
 
     G4bool bFoundOne = false;
     for (G4int iIndex = 0; iIndex < (G4int)PVStore->size(); iIndex++) {
