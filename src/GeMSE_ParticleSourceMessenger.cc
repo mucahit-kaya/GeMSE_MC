@@ -280,12 +280,12 @@ void GeMSE_ParticleSourceMessenger::SetNewValue(G4UIcommand *command,
       m_iAtomicMass = StoI(next());
       G4String sQ = next();
 
-      if (sQ.isNull()) {
+      if (sQ.empty()) {
         m_iIonCharge = m_iAtomicNumber;
       } else {
         m_iIonCharge = StoI(sQ);
         sQ = next();
-        if (sQ.isNull()) {
+        if (sQ.empty()) {
           m_dIonExciteEnergy = 0.0;
         } else {
           m_dIonExciteEnergy = StoD(sQ) * keV;
