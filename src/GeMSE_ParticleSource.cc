@@ -24,7 +24,7 @@ using std::vector;
 #include <G4TrackingManager.hh>
 #include <G4TransportationManager.hh>
 #include <G4VPhysicalVolume.hh>
-#include "G4StrUtil.hh"
+#include <G4String.hh>
 
 GeMSE_ParticleSource::GeMSE_ParticleSource() {
   m_hGenerator="generic";
