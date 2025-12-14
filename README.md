@@ -96,3 +96,5 @@ The simulation output is a `*.root` file with several layers of information:
 The [CADMesh](https://github.com/christopherpoole/CADMesh) interface, specifically [v2.0.3](https://github.com/christopherpoole/CADMesh/releases/tag/v2.0.3) is integrated into this code. This means that one can import CAD samples in STL, PLY or OBJ format into Geant4 for their construction. See an example in [sample_geometries/banana_scan.cc](sample_geometries/banana_scan.cc).
 
 *Note*: Contrary to the CADMesh version used up to (and including) [GeMSE_MC v1.2.0](https://github.com/AG-Schumann/GeMSE_MC/releases/tag/v1.2.0), this one does not support binary STL files (see [sample_geometries/scans_3d/banana_LRT_talk_binary.stl](sample_geometries/scans_3d/banana_LRT_talk_binary.stl)). These can be converted to ASCII using commercial CAD software.
+
+
