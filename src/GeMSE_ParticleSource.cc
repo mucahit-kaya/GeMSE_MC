@@ -24,7 +24,6 @@ using std::vector;
 #include <G4TrackingManager.hh>
 #include <G4TransportationManager.hh>
 #include <G4VPhysicalVolume.hh>
-#include <G4String.hh>
 
 GeMSE_ParticleSource::GeMSE_ParticleSource() {
   m_hGenerator="generic";
@@ -180,10 +179,19 @@ void GeMSE_ParticleSource::ConfineSourceToVolume(G4String hVolumeList) {
 
     // --- new, compatible with Geant4 11.x ---
     // find last '*' character (use rfind() instead of last())
-    auto pos = hRequiredVolumeName.rfind('*');
-    if (bMatch = (pos != G4String::npos)) {
-        hRequiredVolumeName = G4StrUtil::strip_copy(hRequiredVolumeName, G4StrUtil::stripType::trail, '*');
+    std::size_t starPos = hRequiredVolumeName.rfind('*');
+    if (bMatch = (starPos != G4String::npos)) {
+      // remove trailing '*' characters (instead of strip(trailing,'*'))
+      std::size_t lastNotStar = hRequiredVolumeName.find_last_not_of('*');
+      if (lastNotStar == G4String::npos) {
+        // if string is all '*' -> leave empty
+        hRequiredVolumeName.clear();
+      } else {
+        // remove characters after the last non-'*' character
+        hRequiredVolumeName.erase(lastNotStar + 1);
+      }
     }
+
     G4bool bFoundOne = false;
     for (G4int iIndex = 0; iIndex < (G4int)PVStore->size(); iIndex++) {
       G4String hName = (*PVStore)[iIndex]->GetName();

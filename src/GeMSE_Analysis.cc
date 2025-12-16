@@ -2,7 +2,17 @@
 
 #include "globals.hh"
 
+#include "TH1.h"
+#include "TH1D.h"
+
+
 GeMSE_Analysis::GeMSE_Analysis() {
+  static bool once = [](){
+  TH1::AddDirectory(kFALSE);
+  return true;
+  }();
+  (void)once;
+
   fhTotEdep = new TH1D("hTotEdep", ";Energy (keV);Counts", 30000, 0., 3000.);
 }
 

@@ -19,9 +19,12 @@
 #include "G4RunManager.hh"
 #include "G4Version.hh"
 #include "G4GenericAnalysisManager.hh"
+#include "G4Threading.hh"
 
 using G4AnalysisManager = G4GenericAnalysisManager;
 using std::string;
+
+G4double energy_ = 0, efficiency_ = 0, efficiency_err_ = 0, eff_BR_ = 0;
 
 GeMSE_RunAction::GeMSE_RunAction(G4String OutputFolder) {
   fOutputFolder = OutputFolder;
@@ -44,11 +47,11 @@ GeMSE_RunAction::~GeMSE_RunAction() {
 
 void GeMSE_RunAction::BeginOfRunAction(const G4Run* aRun) {
   // set random seed
-  CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
+  // CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
   struct timeval hTimeValue;
-  gettimeofday(&hTimeValue, NULL);
+  //gettimeofday(&hTimeValue, NULL);
   aSeed = hTimeValue.tv_usec;
-  CLHEP::HepRandom::setTheSeed(aSeed);
+  // CLHEP::HepRandom::setTheSeed(aSeed);
   G4cout << "\nStarting run with seed = " << aSeed << G4endl;
 
   auto analysisManager = G4AnalysisManager::Instance();
@@ -56,13 +59,35 @@ void GeMSE_RunAction::BeginOfRunAction(const G4Run* aRun) {
 
   TString ResultFileName;  
   G4int RunID = aRun->GetRunID();
+  // add thread ID info to output file name in MT mode
+  #ifdef G4MULTITHREADED
+    G4int tid = G4Threading::G4GetThreadId(); // worker: 0..N-1, master: -1
+      // Prevent Master thread to create output file
+    if (G4Threading::IsMasterThread()) {
+      // G4cout << "Master thread: skipping ROOT output setup." << G4endl;
+      timer->Start();
+      return;
+    }
+  #else
+    G4int tid = -1;
+  #endif
 
+  // G4cout << "DEBUG RunID=" << RunID << " ThreadID=" << tid << " IsMaster=" << G4Threading::IsMasterThread() << G4endl;  // for debugging
+
+  // set output file name (MT: add thread ID)
   if (fOutputFolder != "") {
     if (analysisManager->GetFileName()=="") {
       std::ostringstream convert;   // stream used for the int->str conversion
       convert << RunID;
-      TString RunName=convert.str();
-      ResultFileName = "results_run" + RunName + ".root";
+      if (tid >= 0) {
+        std::ostringstream tconvert;
+        tconvert << tid;
+        ResultFileName = "results_run" + TString(convert.str()) + "_t" + TString(tconvert.str()) + ".root";
+      }
+      else {
+        // master or single-thread
+        ResultFileName = "results_run" + TString(convert.str()) + ".root";
+      }
     }
     else
       ResultFileName = analysisManager->GetFileName();
@@ -83,6 +108,7 @@ void GeMSE_RunAction::BeginOfRunAction(const G4Run* aRun) {
       G4cout << "#### " << ResultFileName << " -> Overwriting!" << G4endl;
       ResultFile = new TFile(fOutputFolder+"/"+ResultFileName,"recreate");
     }
+  ResultFile->cd();
   }
 
   // Create trees
@@ -132,6 +158,11 @@ void GeMSE_RunAction::BeginOfRunAction(const G4Run* aRun) {
 
   RunTree->Branch("nEvents", &NEvents);
   RunTree->Branch("nDecays", &NDecays);
+
+  tree->Branch("energy", &energy_);
+  tree->Branch("efficiency", &efficiency_);
+  tree->Branch("efficiency_err", &efficiency_err_);
+  tree->Branch("eff_BR", &eff_BR_);
   
   NEvents = aRun->GetNumberOfEventToBeProcessed();
   fNDecays = 0;
@@ -145,23 +176,22 @@ void GeMSE_RunAction::BeginOfRunAction(const G4Run* aRun) {
 }
 
 void GeMSE_RunAction::EndOfRunAction(const G4Run* aRun) {
+  #ifdef G4MULTITHREADED
+    if (G4Threading::IsMasterThread()) return;
+  #endif
+
   // if a tree is defined
   if (tree) {
     // calculate efficiencies
     fRunAnalysis->CalcEfficiencies();
 
     // fill ROOT Tree
-    G4double energy, efficiency, efficiency_err, eff_BR;
-    tree->Branch("energy", &energy);
-    tree->Branch("efficiency", &efficiency);
-    tree->Branch("efficiency_err", &efficiency_err);
-    tree->Branch("eff_BR", &eff_BR);
     int nlines = fRunAnalysis->GetNLines();
     for (int i = 0; i < nlines; ++i) {
-      energy = fRunAnalysis->GetEnergy(i);
-      efficiency = fRunAnalysis->GetEfficiency(i);
-      efficiency_err = fRunAnalysis->GetEfficiency_err(i);
-      eff_BR = fRunAnalysis->GetEffBR(i);
+      energy_ = fRunAnalysis->GetEnergy(i);
+      efficiency_ = fRunAnalysis->GetEfficiency(i);
+      efficiency_err_ = fRunAnalysis->GetEfficiency_err(i);
+      eff_BR_ = fRunAnalysis->GetEffBR(i);
 
       tree->Fill();
     }
@@ -224,3 +254,31 @@ void GeMSE_RunAction::AddDecay()
   fNDecays++;
 }
 
+void GeMSE_RunAction::FillPrimariesTree(int eventID, int trackID, int parentID_,
+                                       double xPriPos_, double yPriPos_, double zPriPos_,
+                                       double ekin_,
+                                       double xDir_, double yDir_, double zDir_,
+                                       const std::string& particle,
+                                       const std::string& creator)
+{
+  if (!PrimariesTree) return;
+
+  PEventID  = eventID;
+  PTrackID  = trackID;
+  ParentID  = parentID_;
+
+  xPriPos = xPriPos_;
+  yPriPos = yPriPos_;
+  zPriPos = zPriPos_;
+
+  PEkin = ekin_;
+
+  xDir = xDir_;
+  yDir = yDir_;
+  zDir = zDir_;
+
+  PParticleID = particle;
+  Process     = creator;
+
+  PrimariesTree->Fill();
+}

@@ -62,25 +62,22 @@ void GeMSE_TrackingAction::PostUserTrackingAction(const G4Track* theTrack){
       zDir=VDir[2];
       ParticleID = new G4String(particleDefinition->GetParticleName());
       
-      if(theTrack->GetCreatorProcess()!=0)
-        CreatorProcess = new G4String(theTrack->GetCreatorProcess()->GetProcessName());
-      else
-        CreatorProcess = new G4String;
-        
-      PrimariesTree->SetBranchAddress("EventID", &EventID);
-      PrimariesTree->SetBranchAddress("TrackID", &TrackID);
-      PrimariesTree->SetBranchAddress("ParentID", &ParentID);
-      PrimariesTree->SetBranchAddress("xPriPos", &xPriPos);
-      PrimariesTree->SetBranchAddress("yPriPos", &yPriPos);
-      PrimariesTree->SetBranchAddress("zPriPos", &zPriPos);
-      PrimariesTree->SetBranchAddress("Ekin", &Ekin);
-      PrimariesTree->SetBranchAddress("xDir", &xDir);
-      PrimariesTree->SetBranchAddress("yDir", &yDir);
-      PrimariesTree->SetBranchAddress("zDir", &zDir);
-      PrimariesTree->SetBranchAddress("ParticleID", &ParticleID);
-      PrimariesTree->SetBranchAddress("CreatorProcess", &CreatorProcess);
-        
-      PrimariesTree->Fill();
+      // if(theTrack->GetCreatorProcess()!=0)CreatorProcess = new G4String(theTrack->GetCreatorProcess()->GetProcessName());
+      // else CreatorProcess = new G4String;
+      
+      const std::string particle =
+          theTrack->GetDefinition()->GetParticleName();
+
+      const std::string creator =
+          theTrack->GetCreatorProcess()
+            ? theTrack->GetCreatorProcess()->GetProcessName()
+            : "";
+ 
+      run_action->FillPrimariesTree(EventID, TrackID, ParentID,
+                                    xPriPos, yPriPos, zPriPos,
+                                    Ekin,
+                                    xDir, yDir, zDir,
+                                    particle, creator);
     }
   }
 }

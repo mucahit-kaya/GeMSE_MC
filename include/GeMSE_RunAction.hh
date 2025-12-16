@@ -38,6 +38,14 @@ class GeMSE_RunAction : public G4UserRunAction {
 
   GeMSE_Analysis* GetRunAnalysis() { return fRunAnalysis; };
 
+void FillPrimariesTree(int eventID, int trackID, int parentID_,
+                       double xPriPos_, double yPriPos_, double zPriPos_,
+                       double ekin_,
+                       double xDir_, double yDir_, double zDir_,
+                       const std::string& particle,
+                       const std::string& creator);
+//  TTree* GetPrimariesTree(); // for debugging
+
  private:
   G4Timer* timer;
   G4long aSeed;
@@ -62,8 +70,8 @@ class GeMSE_RunAction : public G4UserRunAction {
   G4int PEventID;
   G4int PTrackID;
   G4int ParentID;
-  string* PParticleID;
-  string* Process;
+  std::string PParticleID;
+  std::string Process;
   G4double xPriPos;
   G4double yPriPos;
   G4double zPriPos;

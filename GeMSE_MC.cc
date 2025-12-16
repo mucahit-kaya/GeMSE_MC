@@ -1,9 +1,10 @@
 #include "GeMSE_DetectorConstruction.hh"
 #include "GeMSE_PhysicsList.hh"
-#include "GeMSE_PrimaryGeneratorAction.hh"
-#include "GeMSE_RunAction.hh"
+//#include "GeMSE_PrimaryGeneratorAction.hh"
+//#include "GeMSE_RunAction.hh"
 #include "GeMSE_TrackingAction.hh"
 //#include "GeMSE_SensitiveDetector.hh"
+#include "GeMSE_ActionInitialization.hh"
 
 //#include <Randomize.hh>
 #include <TCanvas.h>
@@ -15,11 +16,17 @@
 #include <time.h>
 
 #include "G4RunManager.hh"
+#ifdef G4MULTITHREADED
+  #include "G4MTRunManager.hh"
+  #include "G4Threading.hh"
+#endif
 #include "G4UImanager.hh"
 #include "G4UItcsh.hh"
 #include "G4UIterminal.hh"
 #include "G4VisExecutive.hh"
 #include "G4ios.hh"
+#include "TROOT.h"
+#include "TH1D.h"
 
 
 int main(int argc, char** argv)
@@ -39,8 +46,9 @@ int main(int argc, char** argv)
   G4String MacroFilename;
   G4String GeometryFilename = "src/worldVolume.txt";
   G4String OutputFolder = "";
+  int nThreads=1;
 
-  while ((c = getopt(argc, argv, "m:o:g:")) != -1) {
+  while ((c = getopt(argc, argv, "m:o:g:t:")) != -1) {
     switch (c) {
       case 'm':
         Macro = true;
@@ -54,6 +62,10 @@ int main(int argc, char** argv)
       case 'o':
         OutputFolder = optarg;
         break;
+
+      case 't':
+        nThreads = std::max(1, std::stoi(optarg));
+        break;
     }
   }
   
@@ -65,10 +77,27 @@ int main(int argc, char** argv)
     sleep(1.5);
   }
 
-  // Run manager
-  G4RunManager* runManager = new G4RunManager;
+  // Enable ROOT thread safety in MT mode
+  #ifdef G4MULTITHREADED
+  if (nThreads > 1) {
+    ROOT::EnableThreadSafety();
+    G4cout << "ROOT thread safety enabled" << G4endl;
+  }
+  #endif
 
-  // UserInitialization classes - mandatory
+  // Run manager
+  G4RunManager* runManager = nullptr;
+
+  #ifdef G4MULTITHREADED
+    runManager = new G4MTRunManager();
+    runManager->SetNumberOfThreads(nThreads);
+  #else
+    runManager = new G4RunManager();
+  #endif
+  
+  G4cout << "\nUsing " << runManager->GetNumberOfThreads() << " thread(s).\n" << G4endl;
+
+  // User Initialization classes - mandatory
   G4VUserDetectorConstruction* detector =
       new GeMSE_DetectorConstruction(GeometryFilename);
   runManager->SetUserInitialization(detector);
@@ -76,23 +105,23 @@ int main(int argc, char** argv)
   G4VUserPhysicsList* physics = new GeMSE_PhysicsList;
   runManager->SetUserInitialization(physics);
 
-  // Visualization manager
-  G4VisManager* visManager = new G4VisExecutive;
-  visManager->Initialize();
-
-  // UserAction classes
-  GeMSE_RunAction* run_action = new GeMSE_RunAction(OutputFolder);
-  runManager->SetUserAction(run_action);
-  run_action->SetVersionTag(git_tag);
-
-  GeMSE_PrimaryGeneratorAction* gen_action = new GeMSE_PrimaryGeneratorAction;
-  runManager->SetUserAction(gen_action);
-  
-  G4UserTrackingAction* track_action = new GeMSE_TrackingAction;
-    runManager->SetUserAction(track_action);
+  // User Action Initialization
+  G4VUserActionInitialization *actions = new GeMSE_ActionInitialization(OutputFolder, git_tag);
+  runManager->SetUserInitialization(actions);
 
   // Initialize G4 kernel
-  runManager->Initialize();
+   runManager->Initialize(); 
+
+  // Visualization manager - ONLY for single thread or interactive mode
+  G4VisManager* visManager = nullptr;
+  
+  // Visualization manager -- for only 1 thread
+  if (runManager->GetNumberOfThreads() == 1) {  // MT mode check
+    G4cout << "Initializing Visualization Manager" << G4endl;
+    visManager = new G4VisExecutive;
+    visManager->Initialize();
+  }
+
 
   // Shell & Visualization
   if (!Macro) {
