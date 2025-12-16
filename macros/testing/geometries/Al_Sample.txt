@@ -1,0 +1,18 @@
+// Real sized Al Sample
+
+
+//Rotation
+:ROTM R0 0. 0. 0.
+
+// World
+#include src/worldVolume.txt
+
+
+// 3.9 cm^3 Alüminyum küp
+:VOLU   Sample_Al  BOX  1.95*cm  1.95*cm  1.95*cm  G4_Al
+:PLACE  Sample_Al  1    World R0 0. 0. (3.95+1.95)*cm
+
+
+// For visualization
+:VIS    Sample_Al ON
+:COLOUR Sample_Al 0.8 0.85 0.9

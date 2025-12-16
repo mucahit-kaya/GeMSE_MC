@@ -1,0 +1,531 @@
+###################################
+# Efficiency simulation for GeMSE #
+###################################
+
+# The code will fill an entry in the 'tree' output for each of the '/gammaline/energy' specified
+# G4 version is specified in the macro filename simply to track the '/gammaline/G4BR' source
+
+# For these studies, we usually don't need the primary information, but can be useful
+/writePrimaries true
+
+# Before each run, you can specify a filename via '''
+
+
+# Verbose
+/tracking/verbose 0
+/run/verbose 0
+/control/verbose 0
+/GeMSE/gun/verbose 0
+
+#z-position of end cap = 3.95cm
+#z-position of center of sample cavity = 7.94cm
+
+# # Confinement
+#/GeMSE/gun/type Volume
+#/GeMSE/gun/shape Cylinder
+#/GeMSE/gun/radius 5. cm
+#/GeMSE/gun/halfz 1. cm
+#/GeMSE/gun/center 0 0 3.95 cm
+# 
+# #/GeMSE/gun/radius 8. cm
+# #/GeMSE/gun/radius 34. cm
+# 
+# #/GeMSE/gun/halfz 5. cm
+# #/GeMSE/gun/halfz 18. cm
+# 
+# /GeMSE/gun/center 0 0 7.94 cm
+
+#/GeMSE/gun/type Volume
+#/GeMSE/gun/shape Box
+#/GeMSE/gun/halfx 120. mm
+#/GeMSE/gun/halfy 120. mm
+#/GeMSE/gun/halfz 40. mm
+#/GeMSE/gun/center 0 0 69.5 mm
+
+#/GeMSE/gun/confine TML_Beaker
+#/GeMSE/gun/confine SiWafer
+#/GeMSE/gun/confine SapphireWafer
+#/GeMSE/gun/confine AlPlate
+## --------------- Custom Settings  ------------
+
+/GeMSE/gun/type Volume
+/GeMSE/gun/shape Box
+/GeMSE/gun/halfx 100. mm
+/GeMSE/gun/halfy 100. mm
+/GeMSE/gun/halfz 100. mm
+/GeMSE/gun/center 0 0 69.5 mm
+#/GeMSE/gun/confine Sample_Al
+/GeMSE/gun/confine al_sample
+
+/GeMSE/gun/angtype iso
+
+########################
+# Simulate gammas only #
+########################
+
+/GeMSE/gun/particle gamma
+
+#Th234 (gammas: 92.4 & 92.8 keV; NuDatBR = 0.0213 + 0.021)
+
+#/analysis/setFileName Th324_92.6.root
+# With this command, you can specify a filename for each run, otherwise a default one is generated
+# To study efficiencies, you can simply merge all the output files by typing in your command line
+# 'hadd combined_file.root file1.root file2.root ... fileN.root'
+/gammaline/energy 92.6
+/gammaline/G4BR 1 
+/gammaline/NuDatBR 0.0423
+/gammaline/SigRegion 1.2 
+/gammaline/BkgRegion 10.
+/GeMSE/gun/energy 92.6 keV
+/run/beamOn 1000
+
+#Pa234m (gammas)
+/gammaline/energy 1001.0 
+/gammaline/G4BR 1
+/gammaline/NuDatBR 0.00842
+/gammaline/SigRegion 0.4 
+/gammaline/BkgRegion 10.
+/GeMSE/gun/energy 1001.0 keV
+/run/beamOn 1000
+
+#Ac228 (gammas)
+/gammaline/energy 338.3 
+/gammaline/G4BR 1
+/gammaline/NuDatBR 0.1127
+/gammaline/SigRegion 0.4 
+/gammaline/BkgRegion 10.
+/GeMSE/gun/energy 338.3 keV
+/run/beamOn 1000
+
+######
+#Ra226 & U235 (gammas: 186.2 & 185.7 keV) [Can't give a literature value here]
+#/gammaline/energy 186.0 
+#/gammaline/G4BR 1 
+#/gammaline/NuDatBR 1.
+#/gammaline/SigRegion 1.2 
+#/gammaline/BkgRegion 10.
+#/GeMSE/gun/energy 186.0 keV
+#/run/beamOn 100
+###### NOT simulated. Not used for sample analysis
+
+#Cs137 (gammas)
+/gammaline/energy 661.7 
+/gammaline/G4BR 1 
+/gammaline/NuDatBR 0.851
+/gammaline/SigRegion 0.4 
+/gammaline/BkgRegion 10.
+/GeMSE/gun/energy 661.7 keV
+/run/beamOn 1000
+
+######
+#Cs134 & Bi207 (gammas: 569.3 & 569.7 keV) [Can't give a literature value here]
+#/gammaline/energy 569.5 
+#/gammaline/G4BR 1 
+#/gammaline/NuDatBR 1.
+#/gammaline/SigRegion 1.2 
+#/gammaline/BkgRegion 10.
+#/GeMSE/gun/energy 569.5 keV
+#/run/beamOn 100
+###### NOT simulated. Not used for sample analysis
+
+#Bi207 (gammas)
+/gammaline/energy 1063.7 
+/gammaline/G4BR 1 
+/gammaline/NuDatBR 0.745
+/gammaline/SigRegion 0.4 
+/gammaline/BkgRegion 10.
+/GeMSE/gun/energy 1063.7 keV
+/run/beamOn 1000
+
+#Ag110m (gammas)
+/gammaline/energy 657.8 
+/gammaline/G4BR 1 
+/gammaline/NuDatBR 0.9561
+/gammaline/SigRegion 0.4 
+/gammaline/BkgRegion 10.
+/GeMSE/gun/energy 657.8 keV
+/run/beamOn 1000
+
+/gammaline/energy 884.7 
+/gammaline/G4BR 1 
+/gammaline/NuDatBR 0.75
+/gammaline/SigRegion 0.4 
+/gammaline/BkgRegion 10.
+/GeMSE/gun/energy 884.7 keV
+/run/beamOn 1000
+
+/gammaline/energy 937.5 
+/gammaline/G4BR 1 
+/gammaline/NuDatBR 0.35
+/gammaline/SigRegion 0.4 
+/gammaline/BkgRegion 10.
+/GeMSE/gun/energy 937.5 keV
+/run/beamOn 1000
+
+#Al26
+/gammaline/energy 1808.7
+/gammaline/G4BR 1
+/gammaline/NuDatBR 0.999176
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/energy 1808.7 keV
+/run/beamOn 1000
+
+#########################
+# Switch to full decays #
+#########################
+
+/GeMSE/gun/energy 0 keV
+/GeMSE/gun/particle ion
+
+#Th234
+/gammaline/energy 63.3
+/gammaline/G4BR 0.0372774
+/gammaline/NuDatBR 0.037
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/ion 90 234 0 0
+/grdm/nucleusLimits 234 234 90 90
+/run/beamOn 1000
+
+######
+#Ra226 (from the U238 chain)
+#/gammaline/energy 186.2
+#/gammaline/G4BR 0.0359102
+#/gammaline/NuDatBR 0.0364
+#/gammaline/SigRegion 0.4
+#/gammaline/BkgRegion 10
+#/GeMSE/gun/ion 88 226 0 0
+#/grdm/nucleusLimits 226 226 88 88
+#/run/beamOn 100
+###### NOT simulated. Not used for sample analysis
+
+#Bi214
+/gammaline/energy 609.3
+/gammaline/G4BR 0.458282
+/gammaline/NuDatBR 0.4549
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10.
+
+/gammaline/energy 1120.3
+/gammaline/G4BR 0.149529
+/gammaline/NuDatBR 0.1492
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 1764.5
+/gammaline/G4BR 0.153393
+/gammaline/NuDatBR 0.153
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 83 214 0 0
+/grdm/nucleusLimits 214 214 83 83 
+/run/beamOn 1000
+
+#Pb214
+/gammaline/energy 295.2 
+/gammaline/G4BR 0.182787 
+/gammaline/NuDatBR 0.1842
+/gammaline/SigRegion 0.4 
+/gammaline/BkgRegion 10.
+
+/gammaline/energy 351.9 
+/gammaline/G4BR 0.357528
+/gammaline/NuDatBR 0.356
+/gammaline/SigRegion 0.4 
+/gammaline/BkgRegion 10.
+
+/GeMSE/gun/ion 82 214 0 0
+/grdm/nucleusLimits 214 214 82 82 
+/run/beamOn 1000
+
+#Ac228
+/gammaline/energy 911.2
+/gammaline/G4BR 0.267758
+/gammaline/NuDatBR 0.258
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 969.0
+/gammaline/G4BR 0.164068
+/gammaline/NuDatBR 0.158
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 89 228 0 0
+/grdm/nucleusLimits 228 228 89 89 
+/run/beamOn 1000
+
+#Bi212
+/gammaline/energy 727.3
+/gammaline/G4BR 0.0666591
+/gammaline/NuDatBR 0.0667
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/ion 83 212 0 0
+/grdm/nucleusLimits 212 212 83 83 
+/run/beamOn 1000
+
+#Pb212
+/gammaline/energy 238.6
+/gammaline/G4BR 0.435462
+/gammaline/NuDatBR 0.436
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/ion 82 212 0 0
+/grdm/nucleusLimits 212 212 82 82 
+/run/beamOn 1000
+
+#Tl208
+/gammaline/energy 583.2
+/gammaline/G4BR 0.850116
+#/gammaline/NuDatBR 0.85
+## The MC code corrects for the G4BR and multiplies with the NuDatBR
+## In the special case of Tl208 we have to also account for the Th228 
+## chain BR to Tl208 which is not 100% but rather 35.94% (212Bi->Tl208)
+#/gammaline/NuDatBR 0.85*0.3594=0.30549
+/gammaline/NuDatBR 0.30549
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 2614.5
+/gammaline/G4BR 0.997361
+## See above ~36% BR of Tl208 in Th228 chain
+#/gammaline/NuDatBR 0.99754*0.3594=0.3585
+/gammaline/NuDatBR 0.3585
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 81 208 0 0
+/grdm/nucleusLimits 208 208 81 81 
+/run/beamOn 1000
+
+#K40
+/gammaline/energy 1460.8
+/gammaline/G4BR 0.106615
+/gammaline/NuDatBR 0.1066
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/ion 19 40 0 0
+/grdm/nucleusLimits 40 40 19 19 
+/run/beamOn 1000
+
+#Co56
+/gammaline/energy 846.7
+/gammaline/G4BR 0.999314
+/gammaline/NuDatBR 0.999399
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 1238.3
+/gammaline/G4BR 0.663127
+/gammaline/NuDatBR 0.6646
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 27 56 0 0
+/grdm/nucleusLimits 56 56 27 27 
+/run/beamOn 1000
+
+#Co57
+/gammaline/energy 122.1
+/gammaline/G4BR 0.860383
+/gammaline/NuDatBR 0.856
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 136.5
+/gammaline/G4BR 0.103663
+/gammaline/NuDatBR  0.1068
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 27 57 0 0
+/grdm/nucleusLimits 57 57 27 27
+/run/beamOn 1000
+
+#Co58
+/gammaline/energy 810.8
+/gammaline/G4BR  0.994424
+/gammaline/NuDatBR 0.9945
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/ion 27 58 0 0
+/grdm/nucleusLimits 58 58 27 27 
+/run/beamOn 1000
+
+#Co60
+/gammaline/energy 1173.2
+/gammaline/G4BR 0.998551
+/gammaline/NuDatBR 0.9985
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 1332.5
+/gammaline/G4BR 0.999825
+/gammaline/NuDatBR 0.999826
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 27 60 0 0
+/grdm/nucleusLimits 60 60 27 27 
+/run/beamOn 1000
+
+#Cs134
+/gammaline/energy 604.7
+/gammaline/G4BR 0.976209
+/gammaline/NuDatBR 0.9762
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 795.9
+/gammaline/G4BR 0.85455
+/gammaline/NuDatBR 0.8546
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 55 134 0 0
+/grdm/nucleusLimits 134 134 55 55  
+/run/beamOn 1000
+
+#Be7
+/gammaline/energy 477.6
+/gammaline/G4BR 0.106831
+/gammaline/NuDatBR 0.1044
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/ion 4 7 0 0
+/grdm/nucleusLimits 7 7 4 4 
+/run/beamOn 1000
+
+#Na22
+/gammaline/energy 1274.5
+/gammaline/G4BR 0.999412
+/gammaline/NuDatBR 0.9994
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/ion 11 22 0 0
+/grdm/nucleusLimits 22 22 11 11 
+/run/beamOn 1000
+
+#Mn52
+/gammaline/energy 744.2
+/gammaline/G4BR 0.905221
+/gammaline/NuDatBR 0.9
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 935.5
+/gammaline/G4BR 0.949633
+/gammaline/NuDatBR 0.945
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 1434.1
+/gammaline/G4BR 0.992748
+/gammaline/NuDatBR 1.0
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 25 52 0 0
+/grdm/nucleusLimits 52 52 25 25  
+/run/beamOn 1000
+
+#Mn54
+/gammaline/energy 834.8
+/gammaline/G4BR 0.999759
+/gammaline/NuDatBR 0.99976
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/ion 25 54 0 0
+/grdm/nucleusLimits 54 54 25 25 
+/run/beamOn 1000
+
+#Sc44
+/gammaline/energy 1157.0
+/gammaline/G4BR 0.998791
+/gammaline/NuDatBR 0.999
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/ion 21 44 0 0
+/grdm/nucleusLimits 44 44 21 21 
+/run/beamOn 1000
+
+#Sc46
+/gammaline/energy 889.3
+/gammaline/G4BR 1.00005
+/gammaline/NuDatBR 0.99984
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 1120.5
+/gammaline/G4BR 0.999871
+/gammaline/NuDatBR 0.99987
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 21 46 0 0
+/grdm/nucleusLimits 46 46 21 21  
+/run/beamOn 1000
+
+#Ti44
+/gammaline/energy 67.9
+/gammaline/G4BR 0.921291
+/gammaline/NuDatBR 0.93
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 78.3
+/gammaline/G4BR 0.965868
+/gammaline/NuDatBR 0.964
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 22 44 0 0
+/grdm/nucleusLimits 44 44 22 22
+/run/beamOn 1000
+
+#V48
+/gammaline/energy 983.5
+/gammaline/G4BR 0.99981
+/gammaline/NuDatBR 0.9998
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 1312.1
+/gammaline/G4BR  0.971891
+/gammaline/NuDatBR 0.982
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 23 48 0 0
+/grdm/nucleusLimits 48 48 23 23
+/run/beamOn 1000
+
+#Cr51
+/gammaline/energy 320.1
+/gammaline/G4BR 0.0992371
+/gammaline/NuDatBR 0.0991
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/ion 24 51 0 0
+/grdm/nucleusLimits 51 51 24 24 
+/run/beamOn 1000
+
+#Fe59
+/gammaline/energy 1099.2
+/gammaline/G4BR 0.565038
+/gammaline/NuDatBR 0.565
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/gammaline/energy 1291.6
+/gammaline/G4BR 0.432415
+/gammaline/NuDatBR 0.432
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+
+/GeMSE/gun/ion 26 59 0 0
+/grdm/nucleusLimits 59 59 26 26
+/run/beamOn 1000

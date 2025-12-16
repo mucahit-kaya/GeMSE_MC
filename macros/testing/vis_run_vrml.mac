@@ -1,0 +1,62 @@
+/control/verbose 1
+/run/verbose 1
+/tracking/verbose 0
+/vis/verbose 2
+
+/vis/enable
+/vis/open VRML2FILE
+
+# Geometry visibilities
+/vis/drawVolume
+/vis/viewer/set/viewpointThetaPhi 90. 180.
+/vis/viewer/zoom 1.4
+/vis/viewer/set/style wireframe
+
+
+## Better never turn on visibility of this - at least for me it creates large files (point cloud instead of wire frame):
+/vis/geometry/set/visibility VacuumDet_log 0 false
+##
+
+# This is the inner layer of copper. Samples have to fit in here:
+/vis/geometry/set/visibility CuShielding_log 0 true
+# this is the copper housing of the Germanium crystal:
+/vis/geometry/set/visibility CuHsg_log 0 true
+##
+## Set this to true, if you want to see where our crystal sits:
+/vis/geometry/set/visibility Ge_log 0 true
+/vis/geometry/set/visibility LiContact_log 0 true
+
+
+## All this can be put to invisible to make placing samples easier:
+/vis/geometry/set/visibility CuPlateFixed_log  0 false
+/vis/geometry/set/visibility CuPlateMov_log 0 false
+
+/vis/geometry/set/visibility innerPbShielding_log 0 false
+/vis/geometry/set/visibility innerPbShieldingFixed_log 0 false
+/vis/geometry/set/visibility innerPbShieldingMov_log 0 false
+
+/vis/geometry/set/visibility outerPbShielding_log 0 false
+/vis/geometry/set/visibility outerPbShieldingFixed_log 0 false
+/vis/geometry/set/visibility outerPbShieldingMov_log 0 false
+
+/vis/geometry/set/visibility Coldfinger_log 0 false
+/vis/geometry/set/visibility DetHolder_log 0 false
+/vis/geometry/set/visibility panel_log 0 false
+/vis/geometry/set/visibility TeflonHolder_log 0 false
+
+/vis/viewer/flush   # --> g4_00.wrl: to draw only sample and detector geometry from the beginning
+
+# Store trejectories and add to the scene
+/tracking/storeTrajectory 1      # Level of detail
+/vis/scene/add/trajectories smooth     
+/vis/scene/endOfEventAction accumulate  # Add trejectories to the scene one after another, so it will be stored in one single .wrl file
+
+/run/initialize   
+
+# Now start the run macro file:
+/control/execute custom/macro_seba_testGeoQuick.mac
+
+
+# actually VRML2FILE saves the file just before closing the vimulation, so no need for code bellow, but if it didn't save, uncomment bellow for trajectories
+# After the event run, save scene with trejectories, that will be second file
+#/vis/viewer/flush  # --> g4_01.wrl

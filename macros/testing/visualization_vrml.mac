@@ -1,0 +1,46 @@
+#/control/execute macros/no_verbose.mac
+/control/verbose 2
+/run/verbose 2
+/tracking/verbose 2
+
+/vis/open VRML2FILE
+/vis/drawVolume
+/vis/viewer/set/viewpointThetaPhi 90. 180.
+/vis/viewer/zoom 1.4
+/vis/viewer/set/style wireframe
+
+#/vis/viewer/set/auxiliaryEdge true
+
+## Better never turn on visibility of this - at least for me it creates large files (point cloud instead of wire frame):
+/vis/geometry/set/visibility VacuumDet_log 0 false
+##
+
+# This is the inner layer of copper. Samples have to fit in here:
+/vis/geometry/set/visibility CuShielding_log 0 true
+# this is the copper housing of the Germanium crystal:
+/vis/geometry/set/visibility CuHsg_log 0 true
+##
+## Set this to true, if you want to see where our crystal sits:
+/vis/geometry/set/visibility Ge_log 0 true
+/vis/geometry/set/visibility LiContact_log 0 true
+
+
+## All this can be put to invisible to make placing samples easier:
+/vis/geometry/set/visibility CuPlateFixed_log  0 false
+/vis/geometry/set/visibility CuPlateMov_log 0 false
+
+/vis/geometry/set/visibility innerPbShielding_log 0 false
+/vis/geometry/set/visibility innerPbShieldingFixed_log 0 false
+/vis/geometry/set/visibility innerPbShieldingMov_log 0 false
+
+/vis/geometry/set/visibility outerPbShielding_log 0 false
+/vis/geometry/set/visibility outerPbShieldingFixed_log 0 false
+/vis/geometry/set/visibility outerPbShieldingMov_log 0 false
+
+/vis/geometry/set/visibility Coldfinger_log 0 false
+/vis/geometry/set/visibility DetHolder_log 0 false
+/vis/geometry/set/visibility panel_log 0 false
+/vis/geometry/set/visibility TeflonHolder_log 0 false
+
+
+/vis/viewer/flush

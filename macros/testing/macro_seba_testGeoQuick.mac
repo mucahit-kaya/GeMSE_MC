@@ -1,0 +1,76 @@
+###################################
+# Efficiency simulation for GeMSE #
+###################################
+
+# The code will fill an entry in the 'tree' output for each of the '/gammaline/energy' specified
+# G4 version is specified in the macro filename simply to track the '/gammaline/G4BR' source
+
+# For these studies, we usually don't need the primary information, but can be useful
+/writePrimaries true
+
+# Before each run, you can specify a filename via '''
+
+
+# Verbose
+/tracking/verbose 0
+/run/verbose 0
+/control/verbose 0
+/GeMSE/gun/verbose 0
+
+#z-position of end cap = 3.95cm
+#z-position of center of sample cavity = 7.94cm
+
+# # Confinement
+#/GeMSE/gun/type Volume
+#/GeMSE/gun/shape Cylinder
+#/GeMSE/gun/radius 5. cm
+#/GeMSE/gun/halfz 1. cm
+#/GeMSE/gun/center 0 0 3.95 cm
+
+
+/GeMSE/gun/type Volume
+/GeMSE/gun/shape Box
+/GeMSE/gun/halfx 100. mm
+/GeMSE/gun/halfy 100. mm
+/GeMSE/gun/halfz 100. mm
+/GeMSE/gun/center 0 0 69.5 mm
+
+# 
+# #/GeMSE/gun/radius 8. cm
+# #/GeMSE/gun/radius 34. cm
+# 
+# #/GeMSE/gun/halfz 5. cm
+# #/GeMSE/gun/halfz 18. cm
+# 
+# /GeMSE/gun/center 0 0 7.94 cm
+
+#/GeMSE/gun/type Volume
+#/GeMSE/gun/shape Box
+#/GeMSE/gun/halfx 120. mm
+#/GeMSE/gun/halfy 120. mm
+#/GeMSE/gun/halfz 175. mm
+#/GeMSE/gun/center 0 0 69.5 mm
+
+#/GeMSE/gun/confine TML_Beaker
+#/GeMSE/gun/confine SiWafer
+#/GeMSE/gun/confine SapphireWafer
+/GeMSE/gun/confine Sample_Al
+#/GeMSE/gun/confine al_sample
+
+/GeMSE/gun/angtype iso
+
+########################
+# Simulate 1keV gammas only #
+########################
+
+/GeMSE/gun/particle gamma
+
+/gammaline/energy 1000.0
+/gammaline/G4BR 1
+/gammaline/NuDatBR 1
+/gammaline/SigRegion 0.4
+/gammaline/BkgRegion 10
+/GeMSE/gun/energy 1000.0 keV
+/run/beamOn 1000000
+#/run/beamOn 100
+
